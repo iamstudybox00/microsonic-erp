@@ -1,0 +1,100 @@
+/* class name : color
+cancel-button : 글자만 빨간색
+submit-button : #E8F9FF
+basic-button : #C5BAFF
+reset-button : #fffcee */
+
+.cancel-button {
+  background-color: #C5BAFF !important;
+  border-color: #C5BAFF !important;
+  color: red !important;
+}
+
+.cancel-button:hover {
+  background-color: #C5BAFF !important;
+  border-color: lightblue !important;
+  color: red !important;
+}
+
+.cancel-button:active {
+  background-color: lightblue !important;
+  border-color: lightblue !important;
+  color: red !important;
+}
+
+.submit-button {
+  background-color: #E8F9FF !important;
+  border-color: #E8F9FF !important;
+  color: #4B4B4B !important;
+}
+
+.submit-button:hover {
+  background-color: #E8F9FF !important;
+  border-color: lightblue !important;
+  color: #4B4B4B !important;
+}
+
+.submit-button:active {
+  background-color: lightblue !important;
+  border-color: lightblue !important;
+  color: #4B4B4B !important;
+}
+
+.basic-button {
+  background-color: #C5BAFF !important;
+  border-color: #C5BAFF !important;
+  color: #4B4B4B !important;
+}
+
+.basic-button:hover {
+  background-color: #C5BAFF !important;
+  border-color: lightblue !important;
+  color: #4B4B4B !important;
+}
+
+.basic-button:active {
+  background-color: lightblue !important;
+  border-color: lightblue !important;
+  color: #4B4B4B !important;
+}
+
+.reset-button {
+  background-color: #fffcee !important;
+  color: #4B4B4B !important;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.deleteRow {
+  color: red !important;
+  text-align: center;
+}
+
+th {
+  background-color: #C5BAFF !important;
+  text-align: center;
+}
+
+.page-item:active .page-link {
+  background-color: #C5BAFF !important;
+  border-color: #C5BAFF !important;
+  color: #4B4B4B !important;
+}
+
+.page-item:hover .page-link {
+  background-color: #C5BAFF !important;
+  border-color: #C5BAFF !important;
+  color: #4B4B4B !important;
+}
+
+.page-item.activePage .page-link {
+  background-color: #C5BAFF !important;
+  border-color: #C5BAFF !important;
+  color: #4B4B4B !important;
+}
+
+.w-10 {
+  width: 10%;
+}

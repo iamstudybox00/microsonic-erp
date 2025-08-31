@@ -1,0 +1,86 @@
+@font-face{
+	font-family: 'Nanum';
+	src: url('/fonts/NanumSquareB.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face{
+	font-family: 'Nanum';
+	src: url('/fonts/NanumSquareR.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+a {
+	text-decoration: none !important;
+}
+
+.app-container {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+}
+
+.sidebar {
+	width: 230px;
+	background-color: white;
+	height: 100vh;
+	padding-top: 20px;
+	padding-left: 10px;
+	overflow: auto;
+	top: 65px;
+	float: left;
+	
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 250px;
+    margin-top: 65px;
+    padding: 20px;
+    min-height: calc(100vh - 125px); /* 헤더+푸터 높이를 뺀 값 */
+    padding-bottom: 60px; /* 버튼이 footer에 안 가리도록 */
+    box-sizing: border-box;
+}
+
+.sideLink {
+	color: #4B4B4B !important;
+	font-size: 1.0em;
+	width: 100%;
+	font-family: 'Nanum';
+	font-weight: normal;
+}
+
+.sideLink:hover {
+	background-color: #C5BAFF;
+}
+
+.sideLinkDetail {
+	color: #4B4B4B !important;
+	font-size: 1.0em;
+	margin-left: 15px;
+	font-family: 'Nanum';
+	font-weight: normal;
+	width: 100%;
+}
+
+.activatedLink {
+	background-color: #C5BAFF;
+}
+
+.sideLinkDetail:hover {
+	background-color: #C5BAFF;
+}
+
+.sideElement {
+	font-size: 1.1em;
+	font-family: 'Nanum'; 
+	font-weight: normal;
+	color: #4B4B4B !important;
+}
+
+a {
+	text-decoration: none;
+	color: #4B4B4B !important;
+}

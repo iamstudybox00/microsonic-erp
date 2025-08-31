@@ -1,0 +1,73 @@
+@font-face{
+	font-family: 'Nanum';
+	src: url('../assets/fonts/NanumSquareB.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face{
+	font-family: 'Nanum';
+	src: url('../assets/fonts/NanumSquareR.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: white;
+  height: 100vh;
+  padding-top: 20px;
+  padding-left: 10px;
+  position: fixed;
+  overflow: auto;
+  top: 80px;
+}
+
+.main-content {
+  flex-grow: 1; 
+  margin-left: 250px;
+  margin-top: 70px;
+  padding: 20px;
+  height: calc(100vh - 60px); 
+}
+
+.sideLink{
+	color: #4B4B4B !important;
+	font-size: 1.0em !important;
+	width: 100%;
+
+}
+
+.sideLink:hover{
+  background-color: #C5BAFF;
+}
+
+.sideLinkDetail{
+	color: #4B4B4B !important;
+	font-size: 1.0em !important;
+	margin-left: 15px;
+	font-family: 'Nanum';
+	font-weight: normal !important;
+	width: 100%;
+}
+
+#activatedLink{
+  background-color: #C5BAFF;
+}
+
+.sideLinkDetail:hover{
+  background-color: #C5BAFF;
+}
+
+.sideElement{
+ 	font-size: 1.1em;
+	font-family: 'Nanum'; 
+	font-weight: normal;
+	color: #4B4B4B !important;
+}

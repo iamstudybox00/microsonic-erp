@@ -1,0 +1,66 @@
+
+/* button style */
+button {
+  border: none;
+  color: black;
+  padding: 7.5px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 2px 1px;
+  cursor: pointer;
+  
+}
+.cancel-button {
+  color: red;
+  border-radius: 20px;
+}
+.submit-button {
+  background-color: #C4D9FF;
+  border-radius: 20px;
+}
+.basic-button {
+  background-color: #C5BAFF;
+  border-radius: 20px;
+}
+.reset-button {
+  background-color: #fffcee;
+  border-radius: 20px;
+}
+
+/* footer style */
+footer {
+    background-color: #e1dbff;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #6b4f3f;
+    /* position: fixed;  <- 제거 */
+    width: 100%;
+}
+
+/* addNewItem.jsp table style */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+ tr:hover {
+  background-color: #e0e0e0;
+}
+.img-item{
+	width: 60px;
+	height: 60px;
+}
