@@ -158,7 +158,7 @@ function TransactionView(props) {
                 <tr key={element.accountingRecordIdx}>
                   <td>{element.accountingRecordCategory}</td>
                   <td>{element.accountSubjectCode}</td>
-                  <td>{element.accountSubject}</td>
+                  <td>{element.accountSubjectName}</td>
                   <td>{element.accountingRecordCategory === "차변" ? element.accountingRecordAmount : 0}</td>
                   <td>{element.accountingRecordCategory === "대변" ? element.accountingRecordAmount : 0}</td>
                   <td>{element.summary}</td>

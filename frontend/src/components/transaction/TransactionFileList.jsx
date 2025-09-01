@@ -24,8 +24,20 @@ function TransactionFileList(props) {
     setIsEndLoading(true);
   }
 
-  function downloadData(sfile) {
-    axios.get(props.baseUrl + "/files/" + params.idx + "/" + sfile);
+  function downloadData(fileIdx, ofile) {
+    axios({
+      url: props.baseUrl + "/files/download/" + fileIdx,
+      method: 'GET',
+      responseType: 'blob', // 필수
+    }).then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', ofile); // 서버에서 파일명 내려주면 그걸로 설정 가능
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    });
   }
 
   useEffect(function () {
@@ -37,12 +49,10 @@ function TransactionFileList(props) {
   if (Array.isArray(respData)) {
     respData.forEach(element => {
       fileData.push(
-        <tr
-          key={element.fileIdx}
-        >
+        <tr key={element.fileIdx}>
           <td>{element.ofile}</td>
           <td><Button size="sm" className="basic-button" onClick={() => {
-            downloadData(element.fileIdx);
+            downloadData(element.fileIdx, element.ofile);
           }}>다운로드</Button></td>
         </tr>
       );

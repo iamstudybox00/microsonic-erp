@@ -1,5 +1,6 @@
 package com.erp.springboot.financial.service;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import com.erp.springboot.AuthController;
 import com.erp.springboot.financial.dto.AccountingRecordDTO;
 import com.erp.springboot.financial.dto.FileDTO;
 import com.erp.springboot.financial.dto.TransactionDTO;
@@ -21,13 +22,14 @@ import com.erp.springboot.financial.entity.Files;
 import com.erp.springboot.financial.entity.TransactionItems;
 import com.erp.springboot.financial.entity.Transactions;
 import com.erp.springboot.financial.repository.*;
+import com.erp.springboot.financial.utils.FileUtil;
+
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class TransactionsService {
 
-    private final FilesRepository filesRepository;
 	@Autowired
 	TransactionsRepository transactionsRepository;
 
@@ -48,10 +50,9 @@ public class TransactionsService {
 	
 	@Autowired
 	AccountSubjectsRepository accountSubjectsRepository;
-
-    TransactionsService(FilesRepository filesRepository) {
-        this.filesRepository = filesRepository;
-    }
+	
+	@Autowired
+	FilesRepository filesRepository;
 
 	public int insertTransaction(TransactionDTO dto) {
 		Transactions transaction = new Transactions();
@@ -112,6 +113,7 @@ public class TransactionsService {
 		transaction.setProofCategory(dto.getProofCategory());
 		transaction.setEmpId(employeesRepository.getReferenceById(dto.getEmpId()));
 		transaction.setTransactionDivision(dto.getTransactionDivision());
+		transaction.setTotalAmount(dto.getTotalAmount());
 
 		if (transactionsRepository.save(transaction) != null) {
 			// 수정후 삭제된 제품 삭제
@@ -151,6 +153,30 @@ public class TransactionsService {
 				record.setAccountingRecordAmount(recordDto.getAccountingRecordAmount());
 				record.setSummary(recordDto.getSummary());
 				accoutAccountingRecordsRepository.save(record);
+			}
+			
+			// 수정후 삭제된 첨부파일
+			
+			List<String> deleteFile = filesRepository.findByFileIdxIn(dto.getDeleteFileList());
+			// 실제 저장된 파일 삭제
+			try {
+				FileUtil.deleteFiles(deleteFile);
+			} catch (FileNotFoundException e) {
+				return -1;
+			}
+			// 첨부파일 등록
+			for (FileDTO fileDto : dto.getFileList()) {
+				// dto로 받아온 값들을 entity형태로
+				Files file = new Files();
+				file.setFileCodeIdx(transaction.getFileCodeIdx());
+				file.setOfile(fileDto.getOfile());
+				file.setSfile(fileDto.getSfile());
+				filesRepository.save(file);
+			}
+			
+			// db상 파일 삭제
+			for (int deleteFileIdx : dto.getDeleteFileList()) {
+				filesRepository.deleteById(deleteFileIdx);
 			}
 			return 1;
 
@@ -230,14 +256,26 @@ public class TransactionsService {
 			recordList.add(new AccountingRecordDTO(record));
 		}
 		dto.setRecordList(recordList);
+		
+		// 첨부파일
+		List<Files> fileEntity = filesRepository.findByFileCodeIdx(transactionIdx);
+		List<FileDTO> fileList = new ArrayList<>();
+		for (Files file : fileEntity) {
+			fileList.add(new FileDTO(file));
+		}
+		dto.setFileList(fileList);
 
 		return dto;
 	}
 
-	public void deleteTransaction(int transactionIdx) {
+	public void deleteTransaction(int transactionIdx) throws FileNotFoundException {
 		transactionsRepository.deleteById(transactionIdx);
 		transactionItemsRepository.deleteByTransactionIdx(transactionIdx);
 		accoutAccountingRecordsRepository.deleteByTransactionIdx(transactionIdx);
+		List<String> deleteFileName = filesRepository.getFileNameByTransactionIdx(transactionIdx);
+		System.out.println(deleteFileName);
+		filesRepository.deleteByFileCodeIdx(transactionIdx);
+		FileUtil.deleteFiles(deleteFileName);
 	}
 	
 	public Long count() {

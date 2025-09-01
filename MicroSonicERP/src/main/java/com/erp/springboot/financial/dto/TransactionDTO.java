@@ -33,6 +33,8 @@ public class TransactionDTO {
 	private List<Integer> deleteItemList;
 	// 등록되어 있지만 수정후 삭제될 transactionRecordIdx
 	private List<Integer> deleteRecordList;
+	// 등록되어 있지만 수정후 삭제될 fileIdx
+	private List<Integer> deleteFileList;
 	
 	
 	public TransactionDTO(String type, Transactions entity) {

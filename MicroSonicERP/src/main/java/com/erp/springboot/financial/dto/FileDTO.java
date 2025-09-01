@@ -16,6 +16,7 @@ public class FileDTO {
 	private String sfile;
 	
 	public FileDTO(Files entity) {
+		fileIdx = entity.getFileIdx();
 		fileCodeIdx = entity.getFileCodeIdx();
 		ofile = entity.getOfile();
 		sfile = entity.getSfile();

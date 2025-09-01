@@ -75,6 +75,7 @@ public class TransactionController {
 		try {
 			transactionsService.deleteTransaction(transactionIdx);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "삭제 실패";
 		}
 		return "삭제 성공";

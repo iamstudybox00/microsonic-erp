@@ -14,7 +14,7 @@ public class AccountingRecordDTO {
 	private int transactionIdx;
 	private String accountingRecordCategory;
 	private String accountSubjectCode;
-	private String accountSubject;
+	private String accountSubjectName;
 	private int accountingRecordAmount;
 	private String summary;
 	
@@ -23,7 +23,7 @@ public class AccountingRecordDTO {
 		transactionIdx = entity.getTransactionIdx().getTransactionIdx();
 		accountingRecordCategory = entity.getAccountingRecordCategory();
 		accountSubjectCode = entity.getAccountSubjectCode().getAccountSubjectCode();
-		accountSubject = entity.getAccountSubjectCode().getAccountSubjectName();
+		accountSubjectName = entity.getAccountSubjectCode().getAccountSubjectName();
 		accountingRecordAmount = entity.getAccountingRecordAmount();
 		summary = entity.getSummary();
 	}

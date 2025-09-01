@@ -1,26 +1,15 @@
 package com.erp.springboot.financial.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import com.erp.springboot.financial.dto.FileDTO;
-import com.erp.springboot.financial.dto.ModalClientDTO;
-import com.erp.springboot.financial.entity.Clients;
 import com.erp.springboot.financial.entity.Files;
 import com.erp.springboot.financial.repository.FilesRepository;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Part;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -49,6 +38,13 @@ public class FilesService {
 		}
 
 		return list;
+	}
+
+	public FileDTO getOneFileResource(int fileidx) {
+		Files entity = filesRepository.findById(fileidx).get();
+		FileDTO dto = new FileDTO(entity);
+		
+		return dto;
 	}
 
 //	public List<ModalClientDTO> getModalClientList(String searchField, String searchWord) {

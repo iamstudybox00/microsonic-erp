@@ -72,7 +72,7 @@ function TransactionWrite(props) {
     let files = [];
     for (let i = 0; i < e.target.files.length; i++) {
       files.push({
-        sfile: v4(),
+        sfile: v4() + e.target.files[i].name.substring(e.target.files[i].name.lastIndexOf(".")),
         ofile: e.target.files[i].name
       });
     }
@@ -207,11 +207,11 @@ function TransactionWrite(props) {
   }
 
   useEffect(() => {
-    updateAccountSubjectWithModal(modalData.selectPk);
+    updateAccountSubjectWithModal(modalData.selectRecordPk);
   }, [modalData.accountSubjectCode]);
 
   function updateAccountSubjectWithModal(updatePk) {
-    let updateList = recordList.map(item => item.pk === updatePk ? { ...item, accountSubjectCode: modalData.accountSubjectCode, accountSubjectName: modalData.accountSubjectName } : item);
+    let updateList = recordList.map(record => record.pk === updatePk ? { ...record, accountSubjectCode: modalData.accountSubjectCode, accountSubjectName: modalData.accountSubjectName } : record);
     setRecordList(updateList);
   }
 
@@ -253,11 +253,13 @@ function TransactionWrite(props) {
     if (response.data === 1) { // 성공
       alert("작성 완료");
       //실제 파일들 업로드하기
-      response = await axios.post(props.baseUrl + "/files", fileData);
-      if (response.data === 1) {
-        alert("파일 업로드 완료");
-      } else {
-        axios.delete(props.baseUrl + "/files", fileData);
+      if (fileUploadList.length !== 0) {
+        response = await axios.post(props.baseUrl + "/files", fileData);
+        if (response.data === 1) {
+          alert("파일 업로드 완료");
+        } else {
+          axios.delete(props.baseUrl + "/files", fileData);
+        }
       }
       goList();
     } else {
@@ -378,11 +380,11 @@ function TransactionWrite(props) {
                     <option value="차변">차변</option>
                     <option value="대변">대변</option>
                   </Form.Control></td>
-                  <td><Form.Control name="accountSubjectCode" size="sm" type="text" value={element.accountSubjectCode} onClick={() => { setModalName("ACTSUB"); setIsOpenModal(true); setModalData({ ...modalData, selectPk: element.pk }); }} readOnly /></td>
-                  <td><Form.Control name="accountSubjectName" size="sm" type="text" value={element.accountSubjectName} onClick={() => { setModalName("ACTSUB"); setIsOpenModal(true); setModalData({ ...modalData, selectPk: element.pk }); }} readOnly /></td>
+                  <td><Form.Control name="accountSubjectCode" size="sm" type="text" value={element.accountSubjectCode} onClick={() => { setModalName("ACTSUB"); setIsOpenModal(true); setModalData({ ...modalData, selectRecordPk: element.pk }); }} readOnly /></td>
+                  <td><Form.Control name="accountSubjectName" size="sm" type="text" value={element.accountSubjectName} onClick={() => { setModalName("ACTSUB"); setIsOpenModal(true); setModalData({ ...modalData, selectRecordPk: element.pk }); }} readOnly /></td>
                   <td><Form.Control name="accountingRecordAmount" size="sm" type="number" min={0} value={getCategory(element.pk) !== "대변" ? element.accountingRecordAmount : 0} disabled={getCategory(element.pk) !== "차변" ? true : false} onChange={(e) => { updateRecord(element.pk, e); calcRecordTotal(element.pk, e); }} /></td>
                   <td><Form.Control name="accountingRecordAmount" size="sm" type="number" min={0} value={getCategory(element.pk) !== "차변" ? element.accountingRecordAmount : 0} disabled={getCategory(element.pk) !== "대변" ? true : false} onChange={(e) => { updateRecord(element.pk, e); calcRecordTotal(element.pk, e); }} /></td>
-                  <td><Form.Control name="summary" size="sm" type="text" value={element.summary} /></td>
+                  <td><Form.Control name="summary" size="sm" type="text" value={element.summary} onChange={(e) => { updateRecord(element.pk, e); }} /></td>
                   <td className="text-center"><Link onClick={() => { ConfirmDeleteRecord(element.pk) }} className="deleteRow">X</Link></td>
                 </tr>
               ))}

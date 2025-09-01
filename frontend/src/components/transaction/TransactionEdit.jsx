@@ -15,11 +15,17 @@ function TransactionEdit(props) {
   const [modalName, setModalName] = useState("NONE");
   const [itemList, setItemList] = useState([]);
   const [recordList, setRecordList] = useState([]);
+  const [prevFileList, setPrevFileList] = useState([]);
+  // db에 저장하기 위한 파일명을 가진 list
+  const [fileList, setFileList] = useState([]);
+  // 실제 input으로 받은 파일들
+  const [fileUploadList, setFileUploadList] = useState([]);
   const [allItemTotal, setAllItemTotal] = useState(0);
   const [respData, setRespData] = useState({ itemList: [], recordList: [] });
   // 원래 있었던 row를 삭제하기 위해 transactionItemIdx를 저장해서 백엔드에서 해당 값을 이용해 삭제 신규 row들은 상관 X
   const [deleteItemList, setDeleteItemList] = useState([]);
   const [deleteRecordList, setDeleteRecordList] = useState([]);
+  const [deleteFileList, setDeleteFileList] = useState([]);
   const [isEndLoading, setIsEndLoading] = useState(false);
   const params = useParams();
   const [recordTotal, setRecordTotal] = useState({
@@ -45,7 +51,7 @@ function TransactionEdit(props) {
     // 차/대변
     selectRecordPk: "",
     accountSubjectCode: "",
-    accountSubject: "",
+    accountSubjectName: "",
   });
   const [formData, setFormData] = useState({
     transactionDate: "",
@@ -56,6 +62,18 @@ function TransactionEdit(props) {
       ...formData,
       [e.target.name]: e.target.value
     });
+  }
+
+  const fileDataHandlerAuto = (e) => {
+    setFileUploadList(e.target.files);
+    let files = [];
+    for (let i = 0; i < e.target.files.length; i++) {
+      files.push({
+        sfile: v4() + e.target.files[i].name.substring(e.target.files[i].name.lastIndexOf(".")),
+        ofile: e.target.files[i].name
+      });
+    }
+    setFileList(files);
   }
 
   // 데이터 받아오기
@@ -75,6 +93,9 @@ function TransactionEdit(props) {
         ...record,
         pk: v4()
       }))
+
+      setPrevFileList(data.fileList);
+      console.log(data);
       setRecordList(oriRecordList);
       calcRecordTotalWithList(oriRecordList);
       setFormData({ transactionDate: data.transactionDate, proofCategory: data.proofCategory, transactionDivision: data.transactionDivision });
@@ -161,6 +182,7 @@ function TransactionEdit(props) {
       pk: v4(), accountingRecordIdx: -1, accountingRecordCategory: "", accountSubjectCode: "", accountSubject: "",
       accountingRecordAmount: 0, summary: ""
     }]);
+    console.log(recordList);
   }
 
   function ConfirmDeleteRecord(deletePk) {
@@ -175,11 +197,6 @@ function TransactionEdit(props) {
       calcRecordTotalWithList(updateList);
     }
   }
-
-  // 삭제 idx확인용
-  // useEffect(function() {
-  //   console.log(deleteRecordList);
-  // }, [deleteRecordList]);
 
   function updateRecord(updatePk, e) {
     setRecordList(recordList.map(record => record.pk === updatePk ? { ...record, [e.target.name]: e.target.value } : record));
@@ -230,7 +247,25 @@ function TransactionEdit(props) {
     setRecordTotal(updateTotal);
   }
 
+  useEffect(() => {
+    updateAccountSubjectWithModal(modalData.selectRecordPk);
+  }, [modalData.accountSubjectCode]);
+
+  function updateAccountSubjectWithModal(updatePk) {
+    let updateList = recordList.map(record => record.pk === updatePk ? { ...record, accountSubjectCode: modalData.accountSubjectCode, accountSubjectName: modalData.accountSubjectName } : record);
+    setRecordList(updateList);
+  }
   ///////////////////////////// 차/대변 관련 끝
+  ///////////////////////////// 첨부파일 관련
+  function ConfirmDeleteFile(fileIdx) {
+
+    if (confirm("이 파일을 삭제하시겠습니까?")) {
+      let updateList = prevFileList.filter(file => file.fileIdx !== fileIdx);
+      setPrevFileList(updateList);
+      setDeleteFileList([...deleteFileList, fileIdx]);
+    }
+  }
+  ///////////////////////////// 첨부파일 관련 끝
 
   ///////////////////////////// 작성 완료 폼 전달
   const sendForm = async (e) => {
@@ -255,20 +290,34 @@ function TransactionEdit(props) {
     formData.transactionDate = respData.transactionDate;
     formData.itemList = itemList;
     formData.recordList = recordList;
+    formData.fileList = fileList;
     formData.deleteItemList = deleteItemList;
     formData.deleteRecordList = deleteRecordList;
-    await axios.post(props.baseUrl + "/transactions/" + params.idx, formData)
-      .then((response) => {
-        if (response.data === 1) { // 성공
-          alert("수정 완료");
-          goView();
+    formData.deleteFileList = deleteFileList;
+    formData.totalAmount = allItemTotal;
+    console.log(formData.deleteFileList);
+    let fileData = new FormData();
+    for (let i = 0; i < fileUploadList.length; i++) {
+      fileData.append("fileList", fileUploadList[i]);
+      fileData.append("sfileList", fileList[i].sfile + fileList[i].ofile.substring(fileList[i].ofile.lastIndexOf(".")));
+    }
+
+    let response = await axios.post(props.baseUrl + "/transactions/" + params.idx, formData)
+    if (response.data === 1) { // 성공
+      alert("수정 완료");
+      //실제 파일들 업로드하기
+      if (fileUploadList.length !== 0) {
+        response = await axios.post(props.baseUrl + "/files", fileData);
+        if (response.data === 1) {
+          alert("파일 업로드 완료");
         } else {
-          alert("수정에 실패하였습니다.");
+          axios.delete(props.baseUrl + "/files", fileData);
         }
-      }).catch((err) => {
-        alert("에러 발생");
-        console.log(err); // 오류 확인
-      });
+      }
+      goView();
+    } else {
+      alert("수정에 실패하였습니다.");
+    }
   }
 
   // 백엔드에서 데이터 가져오기 전 로딩중인걸 표시
@@ -380,15 +429,17 @@ function TransactionEdit(props) {
             </tr>
           </thead>
           <tbody>
+
             {recordList.map((element) => (
-              <tr key={element.accountingRecordIdx}>
-                <td><Form.Control size="sm" className="text-center" as="select" value={element.accountingRecordCategory} name="accountingRecordCategory" id="accountingRecordCategory" onChange={(e) => { updateRecord(element.pk, e); }} required >
+
+              <tr key={element.pk}>
+                <td><Form.Control size="sm" className="text-center" as="select" name="accountingRecordCategory" id="accountingRecordCategory" defaultValue={element.accountingRecordCategory} onChange={(e) => { updateRecord(element.pk, e); }} required >
                   <option value="">--선택--</option>
                   <option value="차변">차변</option>
                   <option value="대변">대변</option>
                 </Form.Control></td>
-                <td><Form.Control name="accountSubjectCode" size="sm" type="text" value={element.accountSubjectCode} onChange={(e) => { updateRecord(element.pk, e); }} /></td>
-                <td><Form.Control name="accountSubject" size="sm" type="text" value={element.accountSubject} onChange={(e) => { updateRecord(element.pk, e); }} /></td>
+                <td><Form.Control name="accountSubjectCode" size="sm" type="text" value={element.accountSubjectCode} onClick={() => { setModalName("ACTSUB"); setIsOpenModal(true); setModalData({ ...modalData, selectRecordPk: element.pk }); }} readOnly /></td>
+                <td><Form.Control name="accountSubject" size="sm" type="text" value={element.accountSubjectName} onClick={() => { setModalName("ACTSUB"); setIsOpenModal(true); setModalData({ ...modalData, selectRecordPk: element.pk }); }} readOnly /></td>
                 <td><Form.Control name="accountingRecordAmount" size="sm" type="number" min={0} value={getCategory(element.pk) !== "대변" ? element.accountingRecordAmount : 0} disabled={getCategory(element.pk) !== "차변" ? true : false} onChange={(e) => { updateRecord(element.pk, e); calcRecordTotal(element.pk, e); }} /></td>
                 <td><Form.Control name="accountingRecordAmount" size="sm" type="number" min={0} value={getCategory(element.pk) !== "차변" ? element.accountingRecordAmount : 0} disabled={getCategory(element.pk) !== "대변" ? true : false} onChange={(e) => { updateRecord(element.pk, e); calcRecordTotal(element.pk, e); }} /></td>
                 <td><Form.Control name="summary" size="sm" type="text" value={element.summary} onChange={(e) => { updateRecord(element.pk, e); }} /></td>
@@ -404,9 +455,29 @@ function TransactionEdit(props) {
           </tbody>
         </Table>
 
+        <Row className="mb-3">
+          <Col><strong>파일</strong></Col>
+        </Row>
+        <Table bordered size="sm">
+          <thead>
+            <tr>
+              <th className="w-75">파일명</th>
+              <th className="w-10">삭제</th>
+            </tr>
+          </thead>
+          <tbody>
+            {prevFileList.map((element) => (
+              <tr key={element.fileIdx}>
+                <td className="text-center">{element.ofile}</td>
+                <td className="text-center"><Link onClick={() => { ConfirmDeleteFile(element.fileIdx) }} className="deleteRow">X</Link></td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+
         {/* 파일 업로드 버튼 */}
         <div className="mb-3">
-          <Form.Control type="file" placeholder="첨부파일 업로드"></Form.Control>
+          <Form.Control name="files" type="file" placeholder="첨부파일 업로드" onChange={fileDataHandlerAuto} multiple></Form.Control>
         </div>
 
         <div className="d-flex justify-content-center gap-3">
