@@ -1,5 +1,6 @@
 package com.erp.springboot.financial.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -45,5 +46,5 @@ public class Transactions {
 	private String transactionDivision;
 	
 	@Column(nullable = false, name = "total_amount")
-	private int totalAmount;
+	private BigDecimal totalAmount;
 }

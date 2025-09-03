@@ -1,5 +1,6 @@
 package com.erp.springboot.financial.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class TransactionDTO {
 	private int fileCodeIdx;
 	private String transactionDivision;
 	private String deptName;
-	private int totalAmount;
+	private BigDecimal totalAmount;
 	
 	private List<TransactionItemDTO> itemList;
 	private List<AccountingRecordDTO> recordList;

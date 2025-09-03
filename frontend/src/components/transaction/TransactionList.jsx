@@ -23,11 +23,6 @@ function TransactionList(props) {
   const {page, start, end} = useParams();
 
   const getData = async () => {
-    // const countResp = await axios.get(props.baseUrl + "/transactions/count")
-    // const response = await axios.get(props.baseUrl + "/transactions/page/" + params.page + "/" + pageSize);
-    // setCount(countResp.data);
-    // setRespData(response.data);
-    // setIsEndLoading(true);
     let response = [];
     let countResp = []
     if (start && end) {
@@ -91,36 +86,10 @@ function TransactionList(props) {
     navigate("/transactionWrite");
   }
 
-  // const searchData = async (e) => {
-  //   e.preventDefault();
-  //   const countResp = await axios.get(props.baseUrl + "/transactions/count/" + date.start + "/" + date.end);
-  //   const response = await axios.get(props.baseUrl + "/transactions/" + date.start + "/" + date.end + "/page/1/" + pageSize);
-  //   setCount(countResp.data);
-  //   setRespData(response.data);
-  //   setPrevSearch({ start: date.start, end: date.end });
-  // }
-
   const searchData = async (e) => {
     e.preventDefault();
     navigate("/transactionList/1/" + date.start + "/" + date.end);
   }
-
-  // const movePage = async (e, page, size) => {
-  //   e.preventDefault();
-  //   // 검색중일때
-  //   let response = [];
-
-  //   if (date.start !== "" && date.end !== "") {
-  //     if (prevSearch.start !== date.start || prevSearch.end !== date.end) {
-  //       response = await axios.get(props.baseUrl + "/transactions/" + prevSearch.start + "/" + prevSearch.end + "/page/" + page + "/" + pageSize);
-  //     } else {
-  //       response = await axios.get(props.baseUrl + "/transactions/" + date.start + "/" + date.end + "/page/" + page + "/" + pageSize);
-  //     }
-  //   } else {
-  //     response = await axios.get(props.baseUrl + "/transactions/page/" + page + "/" + size);
-  //   }
-  //   setRespData(response.data);
-  // }
 
   function movePage(e, page) {
     e.preventDefault();
@@ -197,7 +166,7 @@ function TransactionList(props) {
         </Table>
       </div>
 
-      <NavigatePage key={page + "-" + date.start + "-" + date.end} count={count} pageSize={pageSize} blockSize={blockSize} movePage={movePage} curPage={parseInt(page)}  />
+      <NavigatePage key={page + "-" + date.start + "-" + date.end + "-" + count} count={count} pageSize={pageSize} blockSize={blockSize} movePage={movePage} curPage={parseInt(page)}  />
     </div >
   </>
   );

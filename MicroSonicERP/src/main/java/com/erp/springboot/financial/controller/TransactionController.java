@@ -26,7 +26,12 @@ public class TransactionController {
 	// 작성
 	@PostMapping()
 	public int transactionWrite(@RequestBody TransactionDTO dto) {
-		return transactionsService.insertTransaction(dto);
+		try {
+			return transactionsService.insertTransaction(dto);
+
+		} catch (Exception e) {
+			return -1;
+		}
 	}
 
 	// 목록
@@ -66,7 +71,11 @@ public class TransactionController {
 	// 수정
 	@PostMapping("/{transactionIdx}")
 	public int transactionEdit(@PathVariable int transactionIdx, @RequestBody TransactionDTO dto) {
-		return transactionsService.updateTransaction(transactionIdx, dto);
+		try {
+			return transactionsService.updateTransaction(transactionIdx, dto);
+		} catch (Exception e) {
+			return -1;
+		}
 	}
 
 	// 삭제
@@ -89,8 +98,7 @@ public class TransactionController {
 
 	// 기간내 포함된 개수
 	@GetMapping("count/{start}/{end}")
-	public Long transactionCountWithDate(@PathVariable LocalDate start,
-			@PathVariable LocalDate end) {
+	public Long transactionCountWithDate(@PathVariable LocalDate start, @PathVariable LocalDate end) {
 		return transactionsService.countWithDate(start, end);
 	}
 }

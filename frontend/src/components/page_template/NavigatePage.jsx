@@ -17,7 +17,6 @@ function NavigatePage(props) {
   const [pages, setPages] = useState([]);
   const [isEndLoading, setIsEndLoading] = useState(false);
   useEffect(function () {
-
     setBlock();
   }, []);
 
@@ -28,8 +27,6 @@ function NavigatePage(props) {
     if (end > totalPage) {
       end = totalPage;
     }
-    console.log(curBlock);
-
     let block = [];
     for (let i = start; i < end; i++) {
       if (i > totalPage)
