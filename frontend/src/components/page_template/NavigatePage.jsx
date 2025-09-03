@@ -48,8 +48,14 @@ function NavigatePage(props) {
 
   return (<>
     <Pagination className="justify-content-center page">
-      <Pagination.First onClick={(e) => { props.movePage(e, 1, props.pageSize); }} />
+      <Pagination.First onClick={(e) => {
+        if (totalPage === 0)
+          return;
+        props.movePage(e, 1, props.pageSize);
+      }} />
       <Pagination.Prev onClick={(e) => {
+        if (totalPage === 0)
+          return;
         if (curBlock - 1 < 0) {
           props.movePage(e, 1, props.pageSize);
         } else {
@@ -58,13 +64,19 @@ function NavigatePage(props) {
       }} />
       {pages}
       <Pagination.Next onClick={(e) => {
+        if (totalPage === 0)
+          return;
         if (curBlock + 1 >= totalBlock) {
           props.movePage(e, totalPage, props.pageSize);
         } else {
           props.movePage(e, (curBlock + 1) * props.blockSize + 1, props.pageSize);
         }
       }} />
-      <Pagination.Last onClick={(e) => { props.movePage(e, totalPage, props.pageSize); }} />
+      <Pagination.Last onClick={(e) => {
+        if (totalPage === 0)
+          return;
+        props.movePage(e, totalPage, props.pageSize);
+      }} />
     </Pagination>
   </>
   )

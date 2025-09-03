@@ -26,7 +26,7 @@ function Page(props) {
     setCurPage(1);
   }, [props.count])
 
-  function setBlockChangeTotalCount(start, totalPage){
+  function setBlockChangeTotalCount(start, totalPage) {
     let end = start + props.blockSize;
     if (start + props.blockSize > totalPage) {
       end = totalPage;
@@ -66,8 +66,14 @@ function Page(props) {
 
   return (<>
     <Pagination className="justify-content-center page">
-      <Pagination.First onClick={(e) => { props.movePage(e, 1, props.pageSize); setCurPage(1); setCurBlock(0); }} />
+      <Pagination.First onClick={(e) => {
+        if (totalPage === 0)
+          return;
+        props.movePage(e, 1, props.pageSize); setCurPage(1); setCurBlock(0);
+      }} />
       <Pagination.Prev onClick={(e) => {
+        if (totalPage === 0)
+          return;
         if (curBlock - 1 < 0) {
           props.movePage(e, 1, props.pageSize);
           setCurPage(1);
@@ -79,6 +85,8 @@ function Page(props) {
       }} />
       {pages}
       <Pagination.Next onClick={(e) => {
+        if (totalPage === 0)
+          return;
         if (curBlock + 1 >= totalBlock) {
           props.movePage(e, totalPage, props.pageSize);
           setCurPage(totalPage);
@@ -88,7 +96,11 @@ function Page(props) {
           props.movePage(e, (curBlock + 1) * props.blockSize + 1, props.pageSize);
         }
       }} />
-      <Pagination.Last onClick={(e) => { props.movePage(e, totalPage, props.pageSize); setCurBlock(totalBlock - 1); setCurPage(totalPage); }} />
+      <Pagination.Last onClick={(e) => {
+        if (totalPage === 0)
+          return;
+        props.movePage(e, totalPage, props.pageSize); setCurBlock(totalBlock - 1); setCurPage(totalPage);
+      }} />
     </Pagination>
   </>
   )
