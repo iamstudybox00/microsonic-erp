@@ -85,7 +85,6 @@ function AccountSubjectModal(props) {
   const movePage = async (e, page, size) => {
     e.preventDefault();
     let response = [];
-    console.log(searchChange);
     if (prevSearch.searchWord !== "") {
       // 다른 검색을 하였을때 
       if ((prevSearch.searchField !== formData.searchField || prevSearch.searchWord !== formData.searchWord) && searchChange) {
@@ -101,7 +100,7 @@ function AccountSubjectModal(props) {
   }
 
   // 백엔드에서 데이터 가져오기 전 로딩중인걸 표시
-  if (!isEndLoading) {
+  if (!isEndLoading && props.isOpen) {
     return <div className="d-flex justify-content-center align-items-center min-vh-100"><Spinner animation="border" role="status" /></div>
   }
 
