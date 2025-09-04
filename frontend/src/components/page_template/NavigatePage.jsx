@@ -32,7 +32,7 @@ function NavigatePage(props) {
       if (i > totalPage)
         break;
       block.push(
-        <Pagination.Item key={i + 1} onClick={(e) => { props.movePage(e, i + 1, props.pageSize); }} className={`page ${curPage === i + 1 ? 'activePage' : ''}`}>
+        <Pagination.Item key={i + 1} onClick={(e) => { props.movePage(e, i + 1); }} className={`page ${curPage === i + 1 ? 'activePage' : ''}`}>
           {i + 1}
         </Pagination.Item>
       )
@@ -51,15 +51,15 @@ function NavigatePage(props) {
       <Pagination.First onClick={(e) => {
         if (totalPage === 0)
           return;
-        props.movePage(e, 1, props.pageSize);
+        props.movePage(e, 1);
       }} />
       <Pagination.Prev onClick={(e) => {
         if (totalPage === 0)
           return;
         if (curBlock - 1 < 0) {
-          props.movePage(e, 1, props.pageSize);
+          props.movePage(e, 1);
         } else {
-          props.movePage(e, (curBlock - 1) * props.blockSize + props.blockSize, props.pageSize);
+          props.movePage(e, (curBlock - 1) * props.blockSize + props.blockSize);
         }
       }} />
       {pages}
@@ -67,15 +67,15 @@ function NavigatePage(props) {
         if (totalPage === 0)
           return;
         if (curBlock + 1 >= totalBlock) {
-          props.movePage(e, totalPage, props.pageSize);
+          props.movePage(e, totalPage);
         } else {
-          props.movePage(e, (curBlock + 1) * props.blockSize + 1, props.pageSize);
+          props.movePage(e, (curBlock + 1) * props.blockSize + 1);
         }
       }} />
       <Pagination.Last onClick={(e) => {
         if (totalPage === 0)
           return;
-        props.movePage(e, totalPage, props.pageSize);
+        props.movePage(e, totalPage);
       }} />
     </Pagination>
   </>

@@ -24,6 +24,7 @@ function Page(props) {
     setTotalBlock(Math.ceil(Math.ceil(props.count / props.pageSize) / props.blockSize));
     setCurBlock(0);
     setCurPage(1);
+    
   }, [props.count])
 
   function setBlockChangeTotalCount(start, totalPage) {
@@ -100,7 +101,8 @@ function Page(props) {
         if (totalPage === 0)
           return;
         props.movePage(e, totalPage, props.pageSize); setCurBlock(totalBlock - 1); setCurPage(totalPage);
-      }} />
+      }}
+      />
     </Pagination>
   </>
   )

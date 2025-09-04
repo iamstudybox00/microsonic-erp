@@ -20,6 +20,7 @@ function ItemModal(props) {
   const pageSize = 5;
   const blockSize = 3;
   const [isEndLoading, setIsEndLoading] = useState(false);
+  let searchChange = false;
 
   const setModalData = (key, value) => {
     props.selectData((prev) => ({
@@ -59,6 +60,7 @@ function ItemModal(props) {
     const response = await axios.get(props.baseUrl + "/items/" + formData.searchField + "/" + formData.searchWord + "/page/1/" + pageSize);
     setCount(countResp.data);
     setRespData(response.data);
+    searchChange = true;
   }
 
   let trData = [];
@@ -88,7 +90,7 @@ function ItemModal(props) {
     let response = [];
     if (prevSearch.searchWord !== "") {
       // 다른 검색을 하였을때 
-      if (prevSearch.searchField !== formData.searchField || prevSearch.searchWord !== formData.searchWord) {
+      if ((prevSearch.searchField !== formData.searchField || prevSearch.searchWord !== formData.searchWord)  && searchChange) {
         response = await axios.get(props.baseUrl + "/items/" + formData.searchField + "/" + formData.searchWord + "/page/" + page + "/" + size);
       } else {
         response = await axios.get(props.baseUrl + "/items/" + prevSearch.searchField + "/" + prevSearch.searchWord + "/page/" + page + "/" + size);
@@ -96,6 +98,7 @@ function ItemModal(props) {
     } else {
       response = await axios.get(props.baseUrl + "/items/page/" + page + "/" + size);
     }
+    searchChange = false;
     setRespData(response.data);
   }
 

@@ -20,7 +20,7 @@ function TransactionList(props) {
   const pageSize = 5;
   const blockSize = 3;
   const [isEndLoading, setIsEndLoading] = useState(false);
-  const {page, start, end} = useParams();
+  const { page, start, end } = useParams();
 
   const getData = async () => {
     let response = [];
@@ -91,11 +91,13 @@ function TransactionList(props) {
     navigate("/transactionList/1/" + date.start + "/" + date.end);
   }
 
-  function movePage(e, page) {
+  function movePage(e, page, searchChange = false) {
     e.preventDefault();
-    if (date.start != "" && date.end != "") {
+    if (searchChange) {
       navigate("/transactionList/" + page + "/" + date.start + "/" + date.end);
-    } else{
+    } else if (start && end) {
+      navigate("/transactionList/" + page + "/" + start + "/" + end);
+    } else {
       navigate("/transactionList/" + page);
     }
   }
@@ -127,13 +129,13 @@ function TransactionList(props) {
             }}></Form.Control>
             <Button className="basic-button" type="submit">검색</Button>
             <Button className="basic-button mx-3" onClick={(e) => {
-                e.preventDefault();
-                setDate({
-                  start: "",
-                  end: ""
-                })
-                navigate("/transactionList/1");
-              }}> 검색 초기화</Button>
+              e.preventDefault();
+              setDate({
+                start: "",
+                end: ""
+              })
+              navigate("/transactionList/1");
+            }}> 검색 초기화</Button>
           </InputGroup>
         </form>
         <Button className="w-25 basic-button" onClick={goWrite}>전표 작성</Button>
@@ -166,7 +168,7 @@ function TransactionList(props) {
         </Table>
       </div>
 
-      <NavigatePage key={page + "-" + date.start + "-" + date.end + "-" + count} count={count} pageSize={pageSize} blockSize={blockSize} movePage={movePage} curPage={parseInt(page)}  />
+      <NavigatePage key={page + "-" + date.start + "-" + date.end + "-" + count} count={count} pageSize={pageSize} blockSize={blockSize} movePage={movePage} curPage={parseInt(page)} />
     </div >
   </>
   );
